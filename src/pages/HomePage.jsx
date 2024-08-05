@@ -8,9 +8,9 @@ const HomePage = () => {
   return (
     <>
       <Navbar />
-      <div className="max-w-4xl mx-auto mt-8 text-center">
+      <div className="max-w-4xl mx-auto mt-8 px-4 sm:px-6 lg:px-8 text-center">
         <h1 className="text-3xl font-bold text-indigo-700 mb-4">
-          Welcome to Bill Splitter Challenge!
+          Welcome to BillSplit!
         </h1>
         <p className="text-lg text-gray-700 mb-8">
           Think you&apos;re quick at splitting the bill with friends? Test your
