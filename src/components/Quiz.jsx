@@ -66,7 +66,7 @@ const Quiz = () => {
   return (
     <>
       {loadingQuiz ? (
-        <div className="flex items-center justify-center h-screen">
+        <div className="flex items-center justify-center">
           <div role="status">
             <svg
               aria-hidden="true"
