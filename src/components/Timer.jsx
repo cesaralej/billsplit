@@ -18,8 +18,9 @@ const Timer = ({ onTimeUp }) => {
   }, [onTimeUp, timeLeft]);
 
   return (
-    <div>
-      <h2>Time Left: {timeLeft}s</h2>
+    <div className="bg-indigo-100 text-indigo-800 p-4 rounded-lg shadow-lg text-center max-w-xs mx-auto">
+      <h2 className="text-4xl font-bold">{timeLeft}s</h2>
+      <p className="text-lg font-medium">Time Left</p>
     </div>
   );
 };
