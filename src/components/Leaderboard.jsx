@@ -7,7 +7,7 @@ import { useCollectionData } from "react-firebase-hooks/firestore";
 const Leaderboard = () => {
 
   const leaderboardRef = collection(db, "scores");
-  const q = query(leaderboardRef, limit(10), orderBy("score", "desc"));
+  const q = query(leaderboardRef, limit(5), orderBy("score", "desc"));
   const [scores] = useCollectionData(q, { idField: "id" });
 
   return (
