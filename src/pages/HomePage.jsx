@@ -20,12 +20,11 @@ const HomePage = () => {
     setPreviousScore(score); // Save the previous score
     setIsTimeUp(true);
     setQuizStarted(false); // End the quiz and show the button again
-  }
+  };
 
   const handleScoreChange = (newScore) => {
     setScore(newScore);
   };
-
 
   return (
     <>
