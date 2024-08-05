@@ -16,7 +16,7 @@ function generateDivisionOperations(targetAnswers, minDivisor, maxDivisor) {
   for (let answer of targetAnswers) {
     for (let divisor = minDivisor; divisor <= maxDivisor; divisor++) {
       const dividend = answer * divisor;
-      operations.push({ question: `${dividend} ÷ ${divisor}`, answer });
+      operations.push({ dividend: `${dividend}`, divisor: `${divisor}`, answer });
     }
   }
 
@@ -76,18 +76,29 @@ const Questions = ({ onScoreChange }) => {
   };
 
   return (
-    <div>
+    <div className="bg-gray-50 p-6 rounded-lg shadow-md max-w-md mx-auto">
       {currentQuestion && (
-        <div>
-          <h2>{currentQuestion.question}</h2>
-          <form onSubmit={handleSubmit}>
+        <div className="space-y-4">
+          <h2 className="text-2xl font-semibold text-gray-800">
+            The bill was ${currentQuestion.dividend} between{" "}
+            {currentQuestion.divisor} people
+          </h2>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <p className="text-gray-700">
+              Enter the amount each person should pay:
+            </p>
             <input
               type="number"
               value={userAnswer}
               onChange={(e) => setUserAnswer(e.target.value)}
-              disabled={penaltyTimeLeft} // Disable if penalty
+              disabled={penaltyTimeLeft}
+              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-gray-100"
             />
-            <button type="submit" disabled={penaltyTimeLeft}>
+            <button
+              type="submit"
+              disabled={penaltyTimeLeft}
+              className="w-full bg-indigo-500 text-white py-2 px-4 rounded hover:bg-indigo-600 transition disabled:bg-gray-400"
+            >
               Submit
             </button>
           </form>

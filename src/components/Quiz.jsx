@@ -53,18 +53,39 @@ const Quiz = () => {
   return (
     <>
       {quizStarted ? (
-        <div>
+        <div className="flex flex-col items-center space-y-6 bg-white p-8 rounded-lg shadow-lg">
           <Timer onTimeUp={stopQuiz} />
           <Questions onScoreChange={handleScoreChange} />
           <Score score={score} />
-          <button onClick={stopQuiz}>Stop Quiz</button>
+          <button
+            onClick={stopQuiz}
+            className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition"
+          >
+            Stop Quiz
+          </button>
         </div>
       ) : (
-        <>
-          <button onClick={startQuiz}>Start Quiz</button>
-          {Score !== null && <p> Previous Score: {score}</p>}
-          {user && <button onClick={submitScore}>Submit Score</button>}
-        </>
+        <div className="flex flex-col items-center space-y-4 bg-gray-100 p-6 rounded-lg shadow-lg">
+          <button
+            onClick={startQuiz}
+            className="bg-green-500 text-white py-2 px-6 rounded hover:bg-green-600 transition"
+          >
+            Start Quiz
+          </button>
+          {score !== null && (
+            <p className="text-lg font-semibold text-gray-700">
+              Previous Score: {score}
+            </p>
+          )}
+          {user && (
+            <button
+              onClick={submitScore}
+              className="bg-blue-500 text-white py-2 px-6 rounded hover:bg-blue-600 transition"
+            >
+              Submit Score
+            </button>
+          )}
+        </div>
       )}
     </>
   );
