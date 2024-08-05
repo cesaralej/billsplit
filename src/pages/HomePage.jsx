@@ -11,31 +11,28 @@ const HomePage = () => {
   const [previousScore, setPreviousScore] = useState(null);
 
   const startQuiz = () => {
-    setPreviousScore(score); // Save the previous score
     setScore(0); // Reset score
     setIsTimeUp(false); // Reset timer status
     setQuizStarted(true); // Start the quiz
   };
 
   const stopQuiz = () => {
-      setQuizStarted(false); // Stop the quiz
+    setPreviousScore(score); // Save the previous score
+    setIsTimeUp(true);
+    setQuizStarted(false); // End the quiz and show the button again
   }
 
   const handleScoreChange = (newScore) => {
     setScore(newScore);
   };
 
-  const handleTimeUp = () => {
-    setIsTimeUp(true);
-    setQuizStarted(false); // End the quiz and show the button again
-  };
 
   return (
     <>
       <h1>BillSplit Battle</h1>
       {quizStarted ? (
         <div>
-          <Timer onTimeUp={handleTimeUp} />
+          <Timer onTimeUp={stopQuiz} />
           <Quiz onScoreChange={handleScoreChange} isTimeUp={isTimeUp} />
           <Score score={score} />
           <button onClick={stopQuiz}>Stop Quiz</button>
