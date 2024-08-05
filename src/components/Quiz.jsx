@@ -1,105 +1,73 @@
-// src/components/Quiz.js
-import { useState, useEffect } from "react";
-import PropTypes from "prop-types";
+// src/pages/HomePage.js
+import { useState } from "react";
+import Questions from "../components/Questions";
+import Timer from "../components/Timer";
+import Score from "../components/Score";
 
-function generateDivisionOperations(targetAnswers, minDivisor, maxDivisor) {
-  const operations = [];
-
-  for (let answer of targetAnswers) {
-    for (let divisor = minDivisor; divisor <= maxDivisor; divisor++) {
-      const dividend = answer * divisor;
-      operations.push({ question: `${dividend} ÷ ${divisor}`, answer });
-    }
-  }
-
-  return operations;
-}
-
-// Define the range of answers and divisors
-const targetAnswers = [6, 7, 8, 9, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26, 27, 28, 29];
-const minDivisor = 3;
-const maxDivisor = 7;
-
-// Generate the operations
-const operations = generateDivisionOperations(
-  targetAnswers,
-  minDivisor,
-  maxDivisor
-);
-
-const penaltyTime = 3000; // 3 seconds penalty duration
-
-const Quiz = ({ onScoreChange, isTimeUp }) => {
-  const [currentQuestion, setCurrentQuestion] = useState(null);
-  const [userAnswer, setUserAnswer] = useState("");
-  const [score, setScore] = useState(0);
-  const [penaltyActive, setPenaltyActive] = useState(false); // Track penalty status
-
-  useEffect(() => {
-    if (!isTimeUp) {
-      generateQuestion();
-    }
-  }, [isTimeUp]);
-
-  useEffect(() => {
-    if (penaltyActive) {
-      const timer = setTimeout(() => {
-        setPenaltyActive(false); // Re-enable submit button after 3 seconds
-      }, penaltyTime); // 3 seconds penalty duration
-
-      return () => clearTimeout(timer); // Cleanup on unmount or penalty change
-    }
-  }, [penaltyActive]);
+import { auth } from "../firebase/firebase";
+import { db } from "../firebase/firebase";
+import { collection, addDoc } from "firebase/firestore";
+import { serverTimestamp } from "firebase/firestore";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 
-  const generateQuestion = () => {
-    const randomIndex = Math.floor(Math.random() * operations.length);
-    setCurrentQuestion(operations[randomIndex]);
+const Quiz = () => {
+  const [quizStarted, setQuizStarted] = useState(false);
+  const [score, setScore] = useState(
+    window.localStorage.getItem("previousScore") || 0
+  );
+
+  const [user] = useAuthState(auth);
+
+  const startQuiz = () => {
+    console.log("Start Quiz");
+    setScore(0); // Reset score
+    setQuizStarted(true); // Start the quiz
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (penaltyActive) return; // Do nothing if penalty is active
+  const stopQuiz = () => {
+    console.log("Stop Quiz");
+    window.localStorage.setItem("previousScore", score); // Save to local storage
+    setQuizStarted(false); // End the quiz and show the button again
+  };
 
-    if (parseInt(userAnswer) === currentQuestion.answer) {
-      // Correct answer logic
-      setScore(score + 1);
-      onScoreChange(score + 1);
-      generateQuestion(); // Function to generate a new question
-    } else {
-      // Incorrect answer logic
-      setPenaltyActive(true);
+  const handleScoreChange = (newScore) => {
+    setScore(newScore);
+  };
+
+  const submitScore = async () => {
+
+    try {
+      const docRef = await addDoc(collection(db, "scores"), {
+        score: Number(score),
+        createdAt: serverTimestamp(),
+        user: user.displayName,
+      });
+      console.log("Document written with ID: ", docRef.id);
+    } catch (e) {
+      console.error("Error adding document: ", e);
     }
 
-    setUserAnswer(""); // Clear the input field
-  };
+  }; 
 
   return (
-    <div>
-      {currentQuestion && (
+    <>
+      {quizStarted ? (
         <div>
-          <h2>{currentQuestion.question}</h2>
-          <form onSubmit={handleSubmit}>
-            <input
-              type="number"
-              value={userAnswer}
-              onChange={(e) => setUserAnswer(e.target.value)}
-              disabled={penaltyActive || isTimeUp} // Disable if penalty or time is up
-            />
-            <button type="submit" disabled={penaltyActive || isTimeUp}>
-              Submit
-            </button>
-          </form>
+          <Timer onTimeUp={stopQuiz} />
+          <Questions onScoreChange={handleScoreChange} />
+          <Score score={score} />
+          <button onClick={stopQuiz}>Stop Quiz</button>
         </div>
+      ) : (
+        <>
+          <button onClick={startQuiz}>Start Quiz</button>
+          {Score !== null && <p> Previous Score: {score}</p>}
+          {user && <button onClick={submitScore}>Submit Score</button>}
+        </>
       )}
-    </div>
+    </>
   );
-}
-
-  Quiz.propTypes = {
-  onScoreChange: PropTypes.func.isRequired,
-  isTimeUp: PropTypes.bool.isRequired,
 };
-
 
 export default Quiz;
