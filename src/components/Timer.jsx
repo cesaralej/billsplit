@@ -1,18 +1,21 @@
 // src/components/Timer.js
 import { useState, useEffect } from "react";
+import { QUIZ_TIME } from "../config/quizConfig";
 import PropTypes from "prop-types";
 
 const Timer = ({ onTimeUp }) => {
-  const [timeLeft, setTimeLeft] = useState(60);
+  const [timeLeft, setTimeLeft] = useState(QUIZ_TIME);
+  //console.log("Timer")
 
   useEffect(() => {
     if (timeLeft > 0) {
       const timerId = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timerId);
     } else {
+      console.log("Time up!");
       onTimeUp();
     }
-  }, [timeLeft]);
+  }, [onTimeUp, timeLeft]);
 
   return (
     <div>
