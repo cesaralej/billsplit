@@ -87,13 +87,25 @@ const Questions = ({ onScoreChange }) => {
             <p className="text-gray-700">
               Enter the amount each person should pay:
             </p>
-            <input
-              type="number"
-              value={userAnswer}
-              onChange={(e) => setUserAnswer(e.target.value)}
-              disabled={penaltyTimeLeft}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-gray-100"
-            />
+            <div className="relative">
+              <input
+                type="number"
+                value={userAnswer}
+                onChange={(e) => setUserAnswer(e.target.value)}
+                disabled={penaltyTimeLeft} // Disable if penalty
+                className={`border p-2 rounded-md w-full ${
+                  penaltyTimeLeft
+                    ? "border-red-500 bg-red-50 shadow-lg ring-2 ring-red-500"
+                    : "border-gray-300"
+                } transition-all duration-300 ease-in-out`}
+                placeholder="Enter amount"
+              />
+              {penaltyTimeLeft > 0 && (
+                <span className="absolute inset-y-0 right-2 flex items-center text-red-500">
+                  {penaltyTimeLeft}s
+                </span>
+              )}
+            </div>
             <button
               type="submit"
               disabled={penaltyTimeLeft}
